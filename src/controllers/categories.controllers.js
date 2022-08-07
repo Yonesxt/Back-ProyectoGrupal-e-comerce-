@@ -3,9 +3,6 @@ require('dotenv').config();
 //const productList = require('../asset/productList');
 const { Categories } = require('../db.js');
 
-
-
-
 module.exports = {
     
     getCategories : async (req, res) =>{

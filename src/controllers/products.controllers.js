@@ -8,8 +8,6 @@ const { Op } = require('sequelize');
 const reducer = (previousValue, currentValue) => previousValue.concat(currentValue);
 module.exports = {
   getProducts: async (req, res) => {
-    
-    await preLoadProducts();
     const { name } = req.query;
 
     if (!name) {
