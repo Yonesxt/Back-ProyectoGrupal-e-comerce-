@@ -10,7 +10,7 @@ module.exports = {
                 Users.create({
                             firstname: user.given_name,
                             lastname: user.family_name,
-                            username: user.name,
+                            username: user.nickname,
                             email: user.email,
                             profileImage: user.picture.toString(),
                 }).then(userCreate => res.send(userCreate))
@@ -18,7 +18,5 @@ module.exports = {
                 if(aux.getDataValue('disable')) return res.status(401).send({msj : `User disable : ${user}`})
                 return res.send(aux.dataValues)
             }}).catch(error => res.send(error))
-                 
     }
-
 }
