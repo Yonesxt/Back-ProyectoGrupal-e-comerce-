@@ -1,7 +1,8 @@
 const axios = require('axios');
 require('dotenv').config();
-const productList = require('../asset/productList.JSON');
+const productList = require('../asset/productList');
 const { Categories } = require('../db.js');
+
 
 
 

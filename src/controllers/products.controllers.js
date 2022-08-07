@@ -3,8 +3,8 @@ require("dotenv").config();
 const { conn } = require("../db.js");
 const { Products, Categories_Products, Categories } = conn.models;
 const { Op } = require('sequelize');
-const productList = require('../asset/productList');
-
+const respuesta = await fetch("https://polar-sands-01232.herokuapp.com/country")
+const productList= await respuesta.json()
 const reducer = (previousValue, currentValue) => previousValue.concat(currentValue);
 module.exports = {
   getProducts: async (req, res) => {
