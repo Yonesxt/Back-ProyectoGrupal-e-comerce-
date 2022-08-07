@@ -41,6 +41,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+asset/
 jspm_packages/
 /.pnp
 .pnp.js
