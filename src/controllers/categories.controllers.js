@@ -5,7 +5,6 @@ const { Categories } = require('../db.js');
 
 
 
-
 module.exports = {
     
     getCategories : async (req, res) =>{
