@@ -201,9 +201,9 @@ module.exports = {
   },
 
   preLoadProducts : async () =>{
-    const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
-
-    const upToDb = data.map( async(el) => {
+    
+    const {datap}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
+    const upToDb = datap.map( async(el) => {
       try {
 
       const categories = await Categories.findAll();
@@ -247,6 +247,7 @@ module.exports = {
   },
 
   getAllBrand : (req, res) => {
+
     const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
 
     let brandArr = [];
