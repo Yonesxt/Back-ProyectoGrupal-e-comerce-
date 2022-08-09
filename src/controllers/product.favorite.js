@@ -3,7 +3,7 @@ const {  Products,Users,Favorites } = require("../db.js");
 module.exports = {
   favoritePost : async (req, res) => {
     const {idProducts,idUser}=req.body
-    console.log(idUser)
+    
     Users.findByPk(idUser).then((user) => {
       Products.findByPk(idProducts).then  (async(product) => {
         user.addProducts(product).then(respuesta=>{
@@ -19,8 +19,13 @@ module.exports = {
 },
   deleteFavorite : async (req, res) => {
     const{idProducts,idUser}=req.body;
-    await Favorites.destroy({ where: { ProductId: idProducts, UserId:idUser } });
+
+    
+
+    await Favorites.destroy({ where: { ProductId:idProducts, UserId:idUser } });
     return res.send('the favorite was deleted')
+
+
 },getUsersFavorite: async (req, res) => {
   const {id}=req.params
   if(!id){

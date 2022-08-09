@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
+    "start": "nodemon -L",
     "test": "mocha -w ./tests/**/*.spec.js"
   },
   "author": "grupo05",
@@ -23,15 +23,17 @@
     "express": "^4.18.1",
     "express-jwt": "^7.7.5",
     "express-openid-connect": "^2.8.0",
+    "googleapis": "^105.0.0",
     "jwks-rsa": "^2.1.4",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.7.7",
     "pg": "^8.5.1",
     "sequelize": "^6.3.5",
     "stripe": "^10.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^8.2.1",
+    "mocha": "^10.0.0",
     "nodemon": "^2.0.6",
     "supertest": "^6.0.1",
     "supertest-session": "^4.1.0"

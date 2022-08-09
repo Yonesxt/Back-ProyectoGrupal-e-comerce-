@@ -1,4 +1,5 @@
-const { Users } = require('../db')
+const { Users } = require('../db');
+const sendMail = require('./mailer.controllers')
 
 module.exports = {
     infoProfile: async (req, res, next) => {
@@ -13,7 +14,10 @@ module.exports = {
                             username: user.nickname,
                             email: user.email,
                             profileImage: user.picture.toString(),
-                }).then(userCreate => res.send(userCreate))
+                }).then(userCreate => { 
+                    res.send(userCreate)
+                    sendMail(userCreate.email)
+                });
             } else {
                 if(aux.getDataValue('disable')) return res.status(401).send({msj : `User disable : ${user}`})
                 return res.send(aux.dataValues)
