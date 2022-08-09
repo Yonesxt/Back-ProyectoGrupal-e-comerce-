@@ -3,7 +3,7 @@ require("dotenv").config();
 const { conn } = require("../db.js");
 const { Products, Categories_Products, Categories } = conn.models;
 const { Op } = require('sequelize');
-const productList = require('../asset/productList');
+//const productList = require('../asset/productList');
 
 const reducer = (previousValue, currentValue) => previousValue.concat(currentValue);
 module.exports = {
@@ -201,7 +201,10 @@ module.exports = {
   },
 
   preLoadProducts : async () =>{
-    const upToDb = productList.map( async(el) => {
+    
+    const {datap}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
+    
+    const upToDb = datap.map( async(el) => {
       try {
 
       const categories = await Categories.findAll();
@@ -244,9 +247,12 @@ module.exports = {
     }
   },
 
-  getAllBrand : (req, res) => {
+  getAllBrand :async (req, res) => {
+
+    const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
+
     let brandArr = [];
-    let brandMap = productList.map((el) => {
+    let brandMap = data.map((el) => {
         let brand = el.brand;
         
         brandArr.push(brand)
