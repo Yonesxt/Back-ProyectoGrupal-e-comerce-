@@ -1,4 +1,3 @@
-const axios = require('axios');
 require('dotenv').config();
 const { conn } = require('../db.js');
 const {Products, Categories} = conn.models;
