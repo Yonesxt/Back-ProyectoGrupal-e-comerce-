@@ -45,7 +45,6 @@ module.exports = {
     });
     }
   catch (err) {
-    console.log(err);
     return res.send('usuario o producto no encontrado');
   }
 },
@@ -77,7 +76,6 @@ getCommentsbyProduct : async (req, res) => {
         return res.json({ error: 'no hay comentarios sobre este producto' })
       }
   } catch (err) {
-    console.log(err);
     return res.json({ error: 'no hay comentarios sobre este producto' });
   }
 },
@@ -97,7 +95,6 @@ editComment: async (req, res) => {
       return res.send(comment);
     }
   } catch(err){
-    console.log(err);
     return res.send(err);
   }
 },
@@ -124,7 +121,6 @@ deleteCommentById : async (req, res) =>  {
       return res.send("comentario no encontrado ingrese id correctamente");
     }
   } catch(err){
-    console.log(err);
     return res.send(err);
   }
 },
@@ -140,7 +136,6 @@ GetAllReviews : async (req, res) =>  {
     });
     res.send(commentary);
   } catch (error) {
-    console.log(error);
     res.status(404).send({ error });
   }
 

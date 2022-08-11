@@ -11,7 +11,6 @@ const stripe = new Stripe('sk_test_51LPdB5H9O09Vk58exIPgGzJJgrwQB0kAQ13aX3fy3Cbb
 module.exports ={ 
     stripe : async (req, res) => {
         const { id, amount } = req.body;
-        console.log("detalle compra: ", amount,"id: " ,id)
         try {
             const payment = await stripe.paymentIntents.create({
                 currency: "USD",
@@ -20,10 +19,8 @@ module.exports ={
                 payment_method: id,
                 confirm: true
             });
-            console.log("payment", payment.charges.data)
             res.json({ msg: "Successful payment" })
         } catch(error) {
-            console.log(error)
             res.json({ message: error.row.message })
         }
     }

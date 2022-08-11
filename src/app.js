@@ -53,14 +53,6 @@ server.use((req, res, next) => {
 //AUTH
 server.use(auth(config))
 
-
-// server.get('/', (req, res) => {
-//   console.log('Flag App Auth0', req.oidc.isAuthenticated());
-//   console.log('Flag app Auth0 USR', req.oidc.user)
-//   res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-// });
-
-
 server.use('/api', routes);
 
 // Error catching endware.

@@ -21,7 +21,6 @@ module.exports = {
 
       res.send(order);
     } catch (error) {
-      console.log(error);
       res.status(404).send({ error });
     }
   },
@@ -37,14 +36,12 @@ module.exports = {
       });
       res.send(order);
     } catch (error) {
-      console.log(error);
       res.status(404).send({ error });
     }
 
   },
   getAllByidUser: async (req, res) => {
     const { UserId } = req.body;
-    console.log(UserId)
     try {
       const order = await Order.findAll({
         where:{UserId},
@@ -57,7 +54,6 @@ module.exports = {
       });
       res.send(order);
     } catch (error) {
-      console.log(error);
       res.status(404).send({ error });
     }
 
@@ -66,7 +62,6 @@ module.exports = {
   postOrder: async (req, res) => {
     //products array de objetos con products ID + quantity
     const {  UserId, products,shipmentAddress,postalCode  } = req.body;
-    console.log("here", UserId, products);
 
     let orderId = null;
 
@@ -88,11 +83,9 @@ module.exports = {
         Order.create(aux).then(async(order)=>{
           
           orderId = order.dataValues.id
-          console.log("Flas order", orderId)
 
           // orderId = order.getDataValue("id")
 
-          console.log("Flas orderID",orderId);
 
           for await  (let p of products) {
             let respuesta= await order.addProducts(p.id, { through: { unitPrice: p.price,quantity: p.amount}})
@@ -103,7 +96,6 @@ module.exports = {
       Users.findOne({where: {id: UserId}}).then(user => {
         const email = user.dataValues.email
 
-        console.log(orderSuccess(email,orderId))
         sendMail(email, orderSuccess(email,orderId))
       
       

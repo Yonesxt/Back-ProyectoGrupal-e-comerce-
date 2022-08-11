@@ -7,7 +7,6 @@ module.exports = {
         const user = req.body;
 
         Users.findOne({where :{email:user.email}}).then(aux =>{
-            // console.log(aux)
             if(!aux){
                 Users.create({
                             firstname: user.given_name,

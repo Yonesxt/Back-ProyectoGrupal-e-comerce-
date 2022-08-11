@@ -31,7 +31,6 @@ module.exports = {
       const user = await Users.findOne({ where: { id } });
       res.send(user);
     } catch (error) {
-      // console.log(error)
       res.status(404).send(error);
     }
   },
@@ -73,7 +72,6 @@ module.exports = {
 
       res.send({ msg: "User Created", user });
     } catch (error) {
-      console.log(error);
       res.status(404).send({ error: "Can not post user", error });
     }
   },

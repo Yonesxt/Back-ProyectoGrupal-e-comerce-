@@ -4,6 +4,7 @@ const { conn } = require("../db.js");
 const { Products, Categories_Products, Categories } = conn.models;
 const { Op } = require('sequelize');
 
+
 const reducer = (previousValue, currentValue) => previousValue.concat(currentValue);
 module.exports = {
   getProducts: async (req, res) => {
@@ -143,7 +144,6 @@ module.exports = {
       } else res.status(200).send(productsBd)
 
     } catch (error) {
-      console.log('Flag log filterByCategory', error)
       res.status(404).send({ error });
     }
   },
@@ -171,7 +171,6 @@ module.exports = {
       res.send(sortedByName);
 
     } catch (error) {
-      console.log(error)
       res.status(404).send({ error });
     }
   },
@@ -208,9 +207,12 @@ module.exports = {
   },
 
   preLoadProducts: async () => {
+    
+    try {
     const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
+
     data.map(async (el) => {
-      try {
+      
 
         const categories = await Categories.findAll();
         const { id } = categories?.find(elemt => elemt.name == el.categories.toString())
@@ -223,14 +225,12 @@ module.exports = {
           brand: el.brand,
           rating: el.calification,
           description: el.description.trim(),
-        });
-        // console.log(conn.models)
+        })
         await product.addCategories(id, { through: Categories_Products })
+      })
       } catch (error) {
-        console.log(error)
         res.status(404).send({ error });
       }
-    })
   },
 
   getProductsByBrand: async (req, res) => {
@@ -249,14 +249,15 @@ module.exports = {
       else return res.send(products);
 
     } catch (error) {
-      console.log(error);
       res.status(404).send({ error });
     }
   },
 
-  getAllBrand: async(req, res) => {
+  getAllBrand: async (req, res) => {
+    try {
+    const {data}= await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
+      
     let brandArr = [];
-    const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
     data.map((el) => {
       let brand = el.brand;
 
@@ -269,6 +270,9 @@ module.exports = {
     const brandResult = Array.from(brandSet)
 
     res.send(brandResult)
+  } catch (error) {
+    res.status(404).send(error)   
+  }
   },
   updateProduct: async (req, res) => {
     const { id, update } = req.body;

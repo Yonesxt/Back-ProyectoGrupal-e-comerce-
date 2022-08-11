@@ -20,7 +20,6 @@ module.exports = {
                 res.status(400).send('User not found.')
             }
         }catch(error){ 
-            console.log(error)
             res.status(404).send({ error });
         }
     },
@@ -43,7 +42,6 @@ module.exports = {
             res.status(400).send("User not found.")
         }
     }catch(error){
-        console.log(error);
         res.status(404).send({ error });
     }
     },
