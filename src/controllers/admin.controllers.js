@@ -1,4 +1,3 @@
-const axios = require('axios');
 require("dotenv").config();
 const { User } = require('../db.js');
 
@@ -22,6 +21,7 @@ module.exports = {
             }
         }catch(error){ 
             console.log(error)
+            res.status(404).send({ error });
         }
     },
     
@@ -44,6 +44,7 @@ module.exports = {
         }
     }catch(error){
         console.log(error);
+        res.status(404).send({ error });
     }
     },
 

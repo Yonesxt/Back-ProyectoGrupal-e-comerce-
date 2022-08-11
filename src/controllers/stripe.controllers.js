@@ -1,9 +1,6 @@
-const axios = require('axios');
 require('dotenv').config();
-const express = require('express');
 const Stripe = require('stripe');
 
-const router = express.Router();
 
 const stripe = new Stripe('sk_test_51LPdB5H9O09Vk58exIPgGzJJgrwQB0kAQ13aX3fy3Cbbfqy15M3tHnQErMFEzWudeknF9cWbmvPiQLyxdmkRTeOV00iBPBZOeQ')
 

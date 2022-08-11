@@ -21,7 +21,7 @@ const oAuth2Client = new google.auth.OAuth2(
 
 oAuth2Client.setCredentials({refresh_token:REFRESH_TOKEN});
 
-async function sendMail(email) {
+async function sendMail(email, template) {
     try {
         const accessToken = await oAuth2Client.getAccessToken();
         const transporter = nodemailer.createTransport({
@@ -39,7 +39,7 @@ async function sendMail(email) {
             from: "Unknow Code Admin <unknowcode812@gmail.com>",
             to: email,
             subject: "NodeMailer prueba",
-            html: '<h1>Esto es una prueba del NodeMailer </h1>'
+            html: template
         };
 
         const result = await transporter.sendMail(mailOptions);

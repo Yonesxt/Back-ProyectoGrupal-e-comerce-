@@ -3,7 +3,6 @@ require("dotenv").config();
 const { conn } = require("../db.js");
 const { Products, Categories_Products, Categories } = conn.models;
 const { Op } = require('sequelize');
-//const productList = require('../asset/productList');
 
 const reducer = (previousValue, currentValue) => previousValue.concat(currentValue);
 module.exports = {
@@ -12,10 +11,10 @@ module.exports = {
 
     if (!name) {
       const productsBd = await Products.findAll({
-        where:{ disable:false},
+        where: { disable: false },
         include: { model: Categories },
       });
-    
+
 
       if (productsBd.length > 0) return res.send(productsBd);
       else return res.status(404).send('Products not found');
@@ -24,127 +23,133 @@ module.exports = {
     } else {
 
       const productsBdByName = await Products.findAll({
-        where : {
-          name : { [Op.iLike]: `%${name}%`}},
-        include : { model: Categories },
-        limit : 15
+        where: {
+          name: { [Op.iLike]: `%${name}%` }
+        },
+        include: { model: Categories },
+        limit: 15
       });
-    
+
       if (productsBdByName.length > 0) return res.send(productsBdByName);
       else return res.status(404).send('Product not found');
     }
   },
-  getFilter: async(req,res)=>{
-    let arr=[]
-    if(!req.body){
+  getFilter: async (req, res) => {
+    let arr = []
+    if (!req.body) {
       return res.status(404).send('Products not found');
     }
-    const {praice,brand,order,categorie}=req.body
+    const { praice, brand, order, categorie } = req.body
     let min = 0;
     let max = 0;
-    if(!!praice){
-      if(!!praice.min){
-        min=praice.min
+    if (!!praice) {
+      if (!!praice.min) {
+        min = praice.min
       }
-      if(!!praice.max){
-        max=praice.max
+      if (!!praice.max) {
+        max = praice.max
       }
     }
 
     const productsBd = await Products.findAll({
       include: { model: Categories },
     });
-    let auxproductsBd=productsBd
-    brand?.length>0 && brand.map(e=>{
-      if(e){
-      arr.push(auxproductsBd.filter(elemt => elemt.brand== e ))
-      } 
+    let auxproductsBd = productsBd
+    brand?.length > 0 && brand.map(e => {
+      if (e) {
+        arr.push(auxproductsBd.filter(elemt => elemt.brand == e))
+      }
     })
-     arr?.length>0 && (auxproductsBd= arr.reduce(reducer));
-    if(!!order && order=="minor"){
-      auxproductsBd.sort(function(a, b) {
-      if (Number(a.price) > Number(b.price)) {
-        return 1;
+    arr?.length > 0 && (auxproductsBd = arr.reduce(reducer));
+    arr=[]
+    categorie?.length > 0 && categorie.map(e => {
+      if (e) {
+        arr.push(auxproductsBd.filter(elemt => elemt.Categories?.map(elemt => elemt.name.toLowerCase()) == e.toLowerCase()))
       }
-      if (Number(a.price)  < Number(b.price)) {
-        return -1;
-      }
-      return 0;
-    });
-     }
-    else if(!!order && order=="higher"){
-      auxproductsBd.sort(function(a, b) {
-        if (Number(a.price) < Number(b.price)) {
+    })
+    arr?.length > 0 && (auxproductsBd = arr.reduce(reducer));
+    if (!!order && order == "minor") {
+      auxproductsBd.sort(function (a, b) {
+        if (Number(a.price) > Number(b.price)) {
           return 1;
         }
-        if (Number(a.price)  > Number(b.price)) {
+        if (Number(a.price) < Number(b.price)) {
           return -1;
         }
         return 0;
       });
     }
-    else if(!!order && order=="Asc"){
-      auxproductsBd.sort(function(a,b){
-        if(a.name > b.name){
+    else if (!!order && order == "higher") {
+      auxproductsBd.sort(function (a, b) {
+        if (Number(a.price) < Number(b.price)) {
+          return 1;
+        }
+        if (Number(a.price) > Number(b.price)) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+    else if (!!order && order == "Asc") {
+      auxproductsBd.sort(function (a, b) {
+        if (a.name > b.name) {
           return 1;
         };
-        if (a.name < b.name){
+        if (a.name < b.name) {
           return -1
         };
         return 0
       })
     }
-    else if (!!order && order=="Desc") {
-      auxproductsBd.sort(function (a,b){
-        if(a.name> b.name){
+    else if (!!order && order == "Desc") {
+      auxproductsBd.sort(function (a, b) {
+        if (a.name > b.name) {
           return -1;
         };
-        if(a.name < b.name){
+        if (a.name < b.name) {
           return 1;
         };
         return 0
       })
     }
-      if(min || max ){
-        if(!!min){
-          auxproductsBd = auxproductsBd.filter(elemt => Number(elemt.price) > Number(min));
-        }
-        if(!!max){
-          auxproductsBd = auxproductsBd.filter(elemt => Number(elemt.price) < Number(max));
-        }
+    if (min || max) {
+      if (!!min) {
+        auxproductsBd = auxproductsBd.filter(elemt => Number(elemt.price) > Number(min));
       }
-    
-    if(!!categorie){
-      auxproductsBd = auxproductsBd.filter(elemt => elemt.Categories?.map(elemt => elemt.name.toLowerCase()) == categorie.toLowerCase() )
+      if (!!max) {
+        auxproductsBd = auxproductsBd.filter(elemt => Number(elemt.price) < Number(max));
+      }
     }
-    if(!auxproductsBd.length){
+    
+    if (!auxproductsBd.length) {
       return res.status(404).send('Product not found');
     }
     else return res.send(auxproductsBd);
   },
 
-  filterByCategories : async ( req, res) => {
+  filterByCategories: async (req, res) => {
     try {
-        
+
       const productsBd = await Products.findAll({
         include: { model: Categories },
       });
 
       const categoryQuery = req.query.cat
 
-      const filterCategory = productsBd.filter(el => el.Categories?.map(el => el.name.toLowerCase()) == categoryQuery.toLowerCase() )
+      const filterCategory = productsBd.filter(el => el.Categories?.map(el => el.name.toLowerCase()) == categoryQuery.toLowerCase())
 
-      if(categoryQuery){
+      if (categoryQuery) {
         res.status(202).send(filterCategory)
-      }else res.status(200).send(productsBd)
-    
+      } else res.status(200).send(productsBd)
+
     } catch (error) {
-      console.log('Flag log filterByCategory', error) 
+      console.log('Flag log filterByCategory', error)
+      res.status(404).send({ error });
     }
   },
 
-  getOrderByName : async (req, res) => {
-    const {order} = req.query;
+  getOrderByName: async (req, res) => {
+    const { order } = req.query;
 
     try {
       const productsBd = await Products.findAll({
@@ -152,87 +157,88 @@ module.exports = {
       });
 
       let sortedByName = order === 'A-Z' ?
-      productsBd.sort(function (a, b){
-          if(a.name.toString() > b.name.toString()) return 1;
-          if(b.name.toString() > a.name.toString()) return -1;
+        productsBd.sort(function (a, b) {
+          if (a.name.toString() > b.name.toString()) return 1;
+          if (b.name.toString() > a.name.toString()) return -1;
           return 0;
-      }) : 
-      productsBd.sort(function(a,b){
-          if(a.name.toString() > b.name.toString()) return -1;
-          if(b.name.toString() > a.name.toString()) return 1;
+        }) :
+        productsBd.sort(function (a, b) {
+          if (a.name.toString() > b.name.toString()) return -1;
+          if (b.name.toString() > a.name.toString()) return 1;
           return 0;
-      });
+        });
 
       res.send(sortedByName);
-      
+
     } catch (error) {
       console.log(error)
+      res.status(404).send({ error });
     }
   },
 
   postProduct: async (req, res) => {
-    const {categories, ...products} = req.body;
+    const { categories, ...products } = req.body;
     //name image price stock brand rating description 
     try {
-      if (!products.name || !products.price || !products.brand||!products.image ||!products.stock||!products.description ||!categories){
-        
+      if (!products.name || !products.price || !products.brand || !products.image || !products.stock || !products.description || !categories) {
+
         return res
-        .status(400)
-        .send({ error: "Not all fields are required, but..." });
+          .status(400)
+          .send({ error: "Not all fields are required, but..." });
       }
 
-    const product = await Products.create({...products});
-       categories.forEach(async (e) => {
-        const newCat = await Categories.findAll({ 
-          where:{
+      const product = await Products.create({ ...products });
+      categories.forEach(async (e) => {
+        const newCat = await Categories.findAll({
+          where: {
             name: e
           }
 
         })
         await product.addCategories(newCat, { through: Categories_Products })
-    });
-   
-    
+      });
+
+
 
       res.send({ msj: `Product added`, data: product });
     } catch (error) {
       console.error(error);
+      res.status(404).send({ error });
     }
   },
 
-  preLoadProducts : async () =>{
-    
-    const {datap}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
-    
-    const upToDb = datap.map( async(el) => {
+  preLoadProducts: async () => {
+    const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
+    data.map(async (el) => {
       try {
 
-      const categories = await Categories.findAll();
-      const { id } = categories?.find(elemt => elemt.name == el.categories.toString())
-      const product = await Products.create({
-        
-              name: el.name,
-              image: el.image,
-              price: el.price,
-              stock: 300,
-              brand: el.brand,
-              rating: el.calification,
-              description: el.description.trim(),
-      });
-      // console.log(conn.models)
-      await product.addCategories(id, { through: Categories_Products })
-    } catch (error) {
+        const categories = await Categories.findAll();
+        const { id } = categories?.find(elemt => elemt.name == el.categories.toString())
+        const product = await Products.create({
+
+          name: el.name,
+          image: el.image,
+          price: el.price,
+          stock: 300,
+          brand: el.brand,
+          rating: el.calification,
+          description: el.description.trim(),
+        });
+        // console.log(conn.models)
+        await product.addCategories(id, { through: Categories_Products })
+      } catch (error) {
         console.log(error)
-    }
+        res.status(404).send({ error });
+      }
     })
   },
 
-  getProductsByBrand : async (req, res) => {
+  getProductsByBrand: async (req, res) => {
     try {
       const { name } = req.query;
       const products = await Products.findAll({
         where: {
-          name: { [Op.iLike]: `%${name}%`}
+          name: { [Op.iLike]: `%${name}%` }
         },
         include: {
           model: Categories,
@@ -244,18 +250,17 @@ module.exports = {
 
     } catch (error) {
       console.log(error);
+      res.status(404).send({ error });
     }
   },
 
-  getAllBrand :async (req, res) => {
-
-    const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
-
+  getAllBrand: (req, res) => {
     let brandArr = [];
-    let brandMap = data.map((el) => {
-        let brand = el.brand;
-        
-        brandArr.push(brand)
+    const {data}=await axios("https://api.jsonstorage.net/v1/json/19873e5d-80e0-40cc-a575-5723cc2e4084/62a6ce49-696b-4e87-87e4-c9b7c74fbc7c")
+    data.map((el) => {
+      let brand = el.brand;
+
+      brandArr.push(brand)
     });
 
     let brandFlat = brandArr.flat();
@@ -266,11 +271,11 @@ module.exports = {
     res.send(brandResult)
   },
   updateProduct: async (req, res) => {
-    const {id, update } =req.body;
-    
-    const { name, price, brand, stock, description, image }=update
-    if(!name || !price || !brand || !stock || !description || !image){
-      
+    const { id, update } = req.body;
+
+    const { name, price, brand, stock, description, image } = update
+    if (!name || !price || !brand || !stock || !description || !image) {
+
       return res.status(404).send("fill in all the data")
     }
     await Products.update(
@@ -280,12 +285,12 @@ module.exports = {
     return res.status(200).send("the product was changed");
   },
   updateStock: async (req, res) => {
-    const {id, stock } =req.body;
-       
-    let newStock = stock.stock 
+    const { id, stock } = req.body;
+
+    let newStock = stock.stock
 
     await Products.update(
-      { stock: newStock},
+      { stock: newStock },
       { where: { id } }
     );
     return res.status(200).send("stock was changed");

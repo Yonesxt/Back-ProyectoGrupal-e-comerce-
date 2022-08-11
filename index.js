@@ -2,7 +2,7 @@ const server = require('./src/app.js');
 const {preLoadCategories} = require('./src/controllers/categories.controllers.js')
 const {preLoadProducts} = require('./src/controllers/products.controllers.js')
 const { conn } = require('./src/db.js');
-const { Categories, Products, Categories_Products } = conn.models;
+const {  Products } = conn.models;
 
 
 
