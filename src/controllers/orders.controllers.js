@@ -1,5 +1,6 @@
+const axios = require("axios");
 require("dotenv").config();
-const { Order, Users, Products } = require("../db.js");
+const { Order, Users, Products, Products_Orders } = require("../db.js");
 const sendMail = require("./mailer.controllers.js");
 const {orderSuccess} = require('../Templates/Order_Success')
 
