@@ -1,27 +1,53 @@
-const { Users } = require('../db');
-const sendMail = require('./mailer.controllers')
-const {registerTemplate} = require('../Templates/register_Template.js')
+require("dotenv").config();
+const { User } = require('../db.js');
 
 module.exports = {
-    infoProfile: async (req, res, next) => {
-        const user = req.body;
 
-        Users.findOne({where :{email:user.email}}).then(aux =>{
-            // console.log(aux)
-            if(!aux){
-                Users.create({
-                            firstname: user.given_name,
-                            lastname: user.family_name,
-                            username: user.nickname,
-                            email: user.email,
-                            profileImage: user.picture.toString(),
-                }).then(userCreate => { 
-                    res.send(userCreate)
-                    sendMail(userCreate.email, registerTemplate)
-                });
+    banUser : async (req, res) => {
+        let { userId } = req.body;
+        try{
+            let userCheck = await User.findOne({
+                where: {
+                    id: userId,
+                }
+            })
+            if(userCheck){
+                await userCheck.update({
+                    membership: 'Banned',
+                })
+                res.status(200).send(`User ${userCheck.name} has been banned from making reviews.`)
             } else {
-                if(aux.getDataValue('disable')) return res.status(401).send({msj : `User disable : ${user}`})
-                return res.send(aux.dataValues)
-            }}).catch(error => res.send(error))
+                res.status(400).send('User not found.')
+            }
+        }catch(error){ 
+            console.log(error)
+            res.status(404).send({ error });
+        }
+    },
+    
+
+    upgradeToAdmin : async (req, res) => {
+        let { userId } = req.body;   
+    try{
+        let userCheck = await User.findOne({
+            where:{
+                id: userId,
+            }
+        })
+        if(userCheck){
+            await userCheck.update({
+                membership: 'Admin',
+            })
+            res.status(200).send(`User ${userCheck.name} has been made an Admin.`)
+        } else{
+            res.status(400).send("User not found.")
+        }
+    }catch(error){
+        console.log(error);
+        res.status(404).send({ error });
     }
+    },
+
+
+
 }
